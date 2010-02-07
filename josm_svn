@@ -16,6 +16,17 @@ fi
 version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
 
 echo "lokale Version: $version_lokal"
-echo "aktueller Version: $version_svn"
+echo "aktuelle Version: $version_svn"
 
+if [ $version_lokal -lt $version_svn ]; then
+	echo "Die lokale Version ist veraltet. Aktuelle Version wird herunter geladen."
+	cd $source_dest
+	svn co http://josm.openstreetmap.de/svn/trunk
+	echo "Kompiliere aktualisierte Version."
+	ant -f $source_dest/trunk/build.xml
+else
+	echo "Lokale Version ist aktuell."
+fi
 
+echo "Starte JOSM Version $version_lokal"
+java -Xmx1024M -jar $source_dest/trunk/dist/josm-custom.jar
