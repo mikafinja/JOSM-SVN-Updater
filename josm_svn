@@ -35,8 +35,6 @@ else
 	version_lokal=0
 fi
 
-
-
 echo "lokale Version: $version_lokal"
 echo "aktuelle Version: $version_svn"
 
@@ -57,4 +55,5 @@ else
 fi
 version_aktuell=`grep "Revision" < $source_dir/trunk/build/REVISION | awk '{print $2}'`
 echo "Starte JOSM Version $version_aktuell"
-java -Xms$minmem -Xmx$maxmem -Dsun.java2d.opengl=$acc2d -jar $source_dir/trunk/dist/josm-custom.jar
+java -Xms$minmem -Xmx$maxmem -Dsun.java2d.opengl=$acc2d -jar $source_dir/trunk/dist/josm-custom.jar $* &
+echo "JOSM wurde mir der ProzessID $! gestartet"
