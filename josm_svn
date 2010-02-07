@@ -1,8 +1,18 @@
 #!/bin/bash
 
+# Verzeichnis in das das SVN ausgecheckt wird
 source_dir=~/source/josm
 
-if ping josm.openstreetmap.del -c 2 > /dev/null; then
+# Maximaler Heap mit dem die Java-VM gestartet werden soll
+maxmem="1024M"
+
+# Minimaler Heap mit dem die Java-VM gestartet werden soll
+minmem="128M"
+
+# 2D-Beschleunigung aktivieren ja=true; nein=false
+acc2d="true"
+
+if ping josm.openstreetmap.de -c 2 > /dev/null; then
 	version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
 	echo "Repository ist erreichbar."
 else
@@ -47,4 +57,4 @@ else
 fi
 version_aktuell=`grep "Revision" < $source_dir/trunk/build/REVISION | awk '{print $2}'`
 echo "Starte JOSM Version $version_aktuell"
-java -Xmx1024M -jar $source_dir/trunk/dist/josm-custom.jar
+java -Xms$minmem -Xmx$maxmem -Dsun.java2d.opengl=$acc2d -jar $source_dir/trunk/dist/josm-custom.jar
