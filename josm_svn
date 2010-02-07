@@ -1,17 +1,23 @@
 #!/bin/bash
 
-source_dest=~/source/josm
+source_dir=~/source/josm
 
 echo "Überprüfe ob Verzeichnis für JOSM SVN-Version existiert..."
 
-if [ -d $source_dest ]; then
-	echo "Verzeichnis $source_dest existiert"
-	version_lokal=`grep "Revision" < $source_dest/trunk/build/REVISION | awk '{print $2}'`
+if [ -d $source_dir ]; then
+	echo Verzeichnis $source_dir existiert
+	if [ -f $source_dir/trunk/build/REVISION ]; then
+		version_lokal=`grep "Revision" < $source_dir/trunk/build/REVISION | awk '{print $2}'`
+	else
+		echo "Lokale Kopie existiert nicht oder ist beschädigt"
+		version_lokal=0
+	fi
 else
-	echo "Verzeichnis $source_dest wird angelegt"
-	mkdir -p $source_dest
+	echo "Verzeichnis $source_dir wird angelegt"
+	mkdir -p $source_dir
 	version_lokal=0
 fi
+
 
 version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
 
@@ -20,13 +26,13 @@ echo "aktuelle Version: $version_svn"
 
 if [ $version_lokal -lt $version_svn ]; then
 	echo "Die lokale Version ist veraltet. Aktuelle Version wird herunter geladen."
-	cd $source_dest
+	cd $source_dir
 	svn co http://josm.openstreetmap.de/svn/trunk
 	echo "Kompiliere aktualisierte Version."
-	ant -f $source_dest/trunk/build.xml
+	ant -f $source_dir/trunk/build.xml
 else
 	echo "Lokale Version ist aktuell."
 fi
 
 echo "Starte JOSM Version $version_lokal"
-java -Xmx1024M -jar $source_dest/trunk/dist/josm-custom.jar
+java -Xmx1024M -jar $source_dir/trunk/dist/josm-custom.jar
