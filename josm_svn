@@ -34,5 +34,5 @@ else
 	echo "Lokale Version ist aktuell."
 fi
 
-echo "Starte JOSM Version $version_lokal"
+echo "Starte JOSM Version $version_svn"
 java -Xmx1024M -jar $source_dir/trunk/dist/josm-custom.jar
