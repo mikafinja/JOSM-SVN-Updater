@@ -41,7 +41,7 @@ elif [ $version_lokal -lt $version_svn ]; then
 	cd $source_dir
 	svn co http://josm.openstreetmap.de/svn/trunk
 	echo "Kompiliere aktualisierte Version."
-	ant -f $source_dir/trunk/build.xml
+	ant clean dist -f $source_dir/trunk/build.xml
 else
 	echo "Lokale Version ist aktuell."
 fi
