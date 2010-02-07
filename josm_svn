@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source_dest=~/source/josm
+
+echo "Überprüfe ob Verzeichnis für JOSM SVN-Version existiert..."
+
+if [ -d $source_dest ]; then
+	echo "Verzeichnis $source_dest existiert"
+	version_lokal=`grep "Revision" < $source_dest/trunk/build/REVISION | awk '{print $2}'`
+else
+	echo "Verzeichnis $source_dest wird angelegt"
+	mkdir -p $source_dest
+	version_lokal=0
+fi
+
+version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
+
+echo "lokale Version: $version_lokal"
+echo "aktueller Version: $version_svn"
+
+
