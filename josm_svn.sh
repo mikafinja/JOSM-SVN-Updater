@@ -1,4 +1,22 @@
 #!/bin/bash
+#
+#
+# Copyright (C) [2009] [Max Andre - Benutzer Telegnom bei Openstreetmap.org]
+#
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+# General Public License as published by the Free Software Foundation; either version 3 of the License,
+# or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+# without #even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# To get a copy of the GNU General Public License see <http://www.gnu.org/licenses/>.
+#
+#
+###
+# Die Vorgabewerte bitte den eigenen Bedürfnissen anpassen:
+###
 
 # Verzeichnis in das das SVN ausgecheckt wird
 source_dir=~/source/josm
@@ -11,6 +29,10 @@ minmem="128M"
 
 # 2D-Beschleunigung aktivieren ja=true; nein=false
 acc2d="true"
+
+###
+# Beginn des Scripts, aber hier nichts mehr verändern!
+###
 
 if ping josm.openstreetmap.de -c 2 > /dev/null; then
 	version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
