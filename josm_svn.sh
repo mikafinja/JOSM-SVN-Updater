@@ -39,28 +39,31 @@ if ping josm.openstreetmap.de -c 2 > /dev/null; then
 	version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
         echo "Repository ist erreichbar."
 else
+
         # Wenn das Repository nicht erreichbar ist, wird die svn-version auf -1 gesetzt
 	version_svn=-1
 fi
 
-echo "Überprüfe ob Verzeichnis für JOSM SVN-Version existiert..."
+echo "Überprüfe ob Verzeichnis $source_dir existiert..."
 
 # Prüfung ob das angegebene Verzeichnis existiert
 if [ -d $source_dir ]; then
 	echo Verzeichnis $source_dir existiert
+
         # Prüfung ob REVISION-Datei aus dem SVN lokal vorhanden ist
-	if [ -f $source_dir/trunk/build/REVISION ]; then
-                # lokal vorhandene Version aus trunk/build/REVISION auslesen
-		version_lokal=`grep "Revision" < $source_dir/trunk/build/REVISION | awk '{print $2}'`
-	else
+	version_lokal=`svn info $source_dir | grep Revision | awk '{print $2}'`
+	if [ -z $version_lokal ]; then
 		echo "Lokale Kopie existiert nicht"
+
                 # Falls keine lokale Version ermittelt werden konnte, Version auf 0 setzen
 		version_lokal=0
 	fi
 else
+
         # falls das verzeichnis nicht gefunden wurde, wird es angelegt
 	echo "Verzeichnis $source_dir wird angelegt"
 	mkdir -p $source_dir
+
         # lokale Version wird auf 0 gesetzt
 	version_lokal=0
 fi
@@ -72,21 +75,31 @@ echo "aktuelle Version: $version_svn"
 if [ $version_svn -eq -1 ]; then
 	echo "Repository ist nicht erreichbar."
 	if [ $version_lokal -eq 0 ]; then
+
                 # abbruch des scripts
 		echo "Lokale Version existiert nicht, Script wird abgebrochen."
 		exit 1
 	fi
+
 # wenn die lokale Version kleiner ist als die svn version wird das Repository ausgecheckt und kompiliert.
 elif [ $version_lokal -lt $version_svn ]; then
 	echo "Die lokale Version ist veraltet. Aktuelle Version wird herunter geladen."
 	cd $source_dir
-	svn co http://josm.openstreetmap.de/svn/trunk
+
+	# auschecken des Repository
+	svn co http://josm.openstreetmap.de/svn/trunk $source_dir
 	echo "Kompiliere aktualisierte Version."
-	ant clean dist -f $source_dir/trunk/build.xml
+
+        # kompilieren der aktuellen JOSM-Version
+	ant clean dist -f $source_dir/build.xml
 else
 	echo "Lokale Version ist aktuell."
 fi
-version_aktuell=`grep "Revision" < $source_dir/trunk/build/REVISION | awk '{print $2}'`
+version_aktuell=`svn info $source_dir | grep Revision | awk '{print $2}'`
 echo "Starte JOSM Version $version_aktuell"
-java -Xms$minmem -Xmx$maxmem -Dsun.java2d.opengl=$acc2d -jar $source_dir/trunk/dist/josm-custom.jar $* &
+
+# JOSM mit den oben gewählten Parametern startem
+java -Xms$minmem -Xmx$maxmem -Dsun.java2d.opengl=$acc2d -jar $source_dir/dist/josm-custom.jar $* &
+
+# ProzessID mit der JOSM gestartet wurde augeben
 echo "JOSM wurde mir der ProzessID $! gestartet"
