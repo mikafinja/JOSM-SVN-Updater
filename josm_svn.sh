@@ -34,38 +34,49 @@ acc2d="true"
 # Beginn des Scripts, aber hier nichts mehr verändern!
 ###
 
+# prüfung, ob svn-repository erreichbar ist
 if ping josm.openstreetmap.de -c 2 > /dev/null; then
 	version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
-	echo "Repository ist erreichbar."
+        echo "Repository ist erreichbar."
 else
+        # Wenn das Repository nicht erreichbar ist, wird die svn-version auf -1 gesetzt
 	version_svn=-1
 fi
 
 echo "Überprüfe ob Verzeichnis für JOSM SVN-Version existiert..."
 
+# Prüfung ob das angegebene Verzeichnis existiert
 if [ -d $source_dir ]; then
 	echo Verzeichnis $source_dir existiert
+        # Prüfung ob REVISION-Datei aus dem SVN lokal vorhanden ist
 	if [ -f $source_dir/trunk/build/REVISION ]; then
+                # lokal vorhandene Version aus trunk/build/REVISION auslesen
 		version_lokal=`grep "Revision" < $source_dir/trunk/build/REVISION | awk '{print $2}'`
 	else
 		echo "Lokale Kopie existiert nicht"
+                # Falls keine lokale Version ermittelt werden konnte, Version auf 0 setzen
 		version_lokal=0
 	fi
 else
+        # falls das verzeichnis nicht gefunden wurde, wird es angelegt
 	echo "Verzeichnis $source_dir wird angelegt"
 	mkdir -p $source_dir
+        # lokale Version wird auf 0 gesetzt
 	version_lokal=0
 fi
 
 echo "lokale Version: $version_lokal"
 echo "aktuelle Version: $version_svn"
 
+# wenn keine lokale Version vorhanden ist und das SVN-Repository nicht erreichbar ist, wird das Script abgebrochen
 if [ $version_svn -eq -1 ]; then
 	echo "Repository ist nicht erreichbar."
 	if [ $version_lokal -eq 0 ]; then
+                # abbruch des scripts
 		echo "Lokale Version existiert nicht, Script wird abgebrochen."
 		exit 1
 	fi
+# wenn die lokale Version kleiner ist als die svn version wird das Repository ausgecheckt und kompiliert.
 elif [ $version_lokal -lt $version_svn ]; then
 	echo "Die lokale Version ist veraltet. Aktuelle Version wird herunter geladen."
 	cd $source_dir
