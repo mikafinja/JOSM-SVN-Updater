@@ -37,7 +37,7 @@ acc2d="true"
 # Parsen der übergebenen Parameter
 
 set -- `getopt "hm:" "$@"`
-while [ "$1" != "" ]; do
+while [ "$1" != "-*" ]; do
 	case "$1" in
 		-h) echo "Hilfe: `basename $0` [-h] [-m] [Dateien]"; 
 		#-n) echo "Repository wird nicht ausgecheckt. Lokale Version wird gestartet";
@@ -45,6 +45,7 @@ while [ "$1" != "" ]; do
                     echo "-m : Speicher der JOSM zugewiesen wird (in MB). Muss größer als $minmem sein"; 
 		    exit;;
 		-m) shift; maxmem="$1";;
+		--) break;;
 	esac
 	shift
 done
@@ -115,7 +116,7 @@ version_aktuell=`svn info $source_dir | grep Revision | awk '{print $2}'`
 echo "Starte JOSM Version $version_aktuell"
 
 # JOSM mit den oben gewählten Parametern startem
-java -Xms"$minmem"M -Xmx"$maxmem"M -Dsun.java2d.opengl=$acc2d -jar $source_dir/dist/josm-custom.jar &
+java -Xms"$minmem"M -Xmx"$maxmem"M -Dsun.java2d.opengl=$acc2d -jar $source_dir/dist/josm-custom.jar $@ &
 
 # ProzessID mit der JOSM gestartet wurde augeben
 echo "JOSM wurde mir der ProzessID $! gestartet"
