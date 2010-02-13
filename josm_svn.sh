@@ -21,11 +21,11 @@
 # Verzeichnis in das das SVN ausgecheckt wird
 source_dir=~/source/josm
 
-# Maximaler Heap mit dem die Java-VM gestartet werden soll
-maxmem="1024M"
+# Maximaler Heap mit dem die Java-VM gestartet werden soll (in MB)
+maxmem="1240"
 
-# Minimaler Heap mit dem die Java-VM gestartet werden soll
-minmem="128M"
+# Minimaler Heap mit dem die Java-VM gestartet werden soll (in MB)
+minmem="128"
 
 # 2D-Beschleunigung aktivieren ja=true; nein=false
 acc2d="true"
@@ -34,7 +34,23 @@ acc2d="true"
 # Beginn des Scripts, aber hier nichts mehr verändern!
 ###
 
+# Parsen der übergebenen Parameter
+
+set -- `getopt "hm:" "$@"`
+while [ "$1" != "" ]; do
+	case "$1" in
+		-h) echo "Hilfe: `basename $0` [-h] [-m] [Dateien]"; 
+		#-n) echo "Repository wird nicht ausgecheckt. Lokale Version wird gestartet";
+		    echo "-h : zeigt diese Hilfe an";	
+                    echo "-m : Speicher der JOSM zugewiesen wird (in MB). Muss größer als $minmem sein"; 
+		    exit;;
+		-m) shift; maxmem="$1";;
+	esac
+	shift
+done
+
 # prüfung, ob svn-repository erreichbar ist
+
 if ping josm.openstreetmap.de -c 2 > /dev/null; then
 	version_svn=`svn info http://josm.openstreetmap.de/svn/trunk | grep Revision | awk '{print $2}'`
         echo "Repository ist erreichbar."
@@ -99,7 +115,7 @@ version_aktuell=`svn info $source_dir | grep Revision | awk '{print $2}'`
 echo "Starte JOSM Version $version_aktuell"
 
 # JOSM mit den oben gewählten Parametern startem
-java -Xms$minmem -Xmx$maxmem -Dsun.java2d.opengl=$acc2d -jar $source_dir/dist/josm-custom.jar $* &
+java -Xms"$minmem"M -Xmx"$maxmem"M -Dsun.java2d.opengl=$acc2d -jar $source_dir/dist/josm-custom.jar &
 
 # ProzessID mit der JOSM gestartet wurde augeben
 echo "JOSM wurde mir der ProzessID $! gestartet"
