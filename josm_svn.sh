@@ -37,7 +37,7 @@ acc2d="true"
 # Parsen der übergebenen Parameter
 
 set -- `getopt "hm:" "$@"`
-while [ "$1" != "-*" ]; do
+while [ "$1" != "" ]; do
 	case "$1" in
 		-h) echo "Hilfe: `basename $0` [-h] [-m] [Dateien]"; 
 		#-n) echo "Repository wird nicht ausgecheckt. Lokale Version wird gestartet";
