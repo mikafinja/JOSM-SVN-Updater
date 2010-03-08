@@ -124,7 +124,7 @@ else
 		echo "Lokale Version ist aktuell."
 	fi
 fi
-if [ $build -eq 1 ]; then
+if [ "$build" == "1" ]; then
 	ant clean dist -f $source_dir/build.xml
 fi
 
