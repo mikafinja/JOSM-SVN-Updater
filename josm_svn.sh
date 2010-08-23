@@ -28,7 +28,7 @@ maxmem="1240"
 minmem="128"
 
 # 2D-Beschleunigung aktivieren ja=true; nein=false
-acc2d="true"
+acc2d="false"
 
 ###
 # Beginn des Scripts, aber hier nichts mehr verändern!
