@@ -36,15 +36,19 @@ acc2d="true"
 
 # Parsen der übergebenen Parameter
 
-set -- `getopt "hrm:" "$@"`
+set -- `getopt "hlorm:" "$@"`
 while [ "$1" != "" ]; do
 	case "$1" in
 		-h) echo "Hilfe: `basename $0` [-h] [-m] [Dateien]"; 
 		#-n) echo "Repository wird nicht ausgecheckt. Lokale Version wird gestartet";
 		    echo "-h : zeigt diese Hilfe an";	
+		    echo "-l : zeigt die lokale Versionsnummer an";
+		    echo "-o : zeigt die Versionsnummer im Repository an";
                     echo "-m : Speicher der JOSM zugewiesen wird (in MB). Muss größer als $minmem sein"; 
 		    echo "-r : Erneute Kompilierung der lokal vorhandenen Quellen.";
 		    exit;;
+		-l) shift; showloc=1;;
+		-o) shift; showonline=1;;
 		-m) shift; maxmem="$1";;
 		-r) shift; build=1;;
 		--) break;;
@@ -52,6 +56,24 @@ while [ "$1" != "" ]; do
 	shift
 done
 
+if [ "$showloc" == "1" ]; then
+	if svn info $source_dir > /dev/null; then
+		svn info $source_dir | grep Revision
+	else
+		echo "Keine lokalen Quellen gefunden."
+	fi
+	exit 1
+fi
+
+if [ "$showonline" == "1" ]; then
+	if ping josm.openstreetmap.de -c 2 > /dev/null; then
+		echo "aktuelle Version im Repository:"
+		svn info http://josm.openstreetmap.de/svn/trunk | grep Revision
+	else
+		echo "Repository ist nicht erreichbar / offline"
+	fi
+	exit 1
+fi
 
 if [ "$build" == "1" ]; then
 	if svn info $source_dir > /dev/null; then
