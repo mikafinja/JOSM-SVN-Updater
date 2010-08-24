@@ -143,7 +143,12 @@ else
 		# kompilieren der aktuellen JOSM-Version
 		build=1;
 	else
-		echo "Lokale Version ist aktuell."
+		if [ -f $source_dir/dist/josm-custom.jar ]; then
+			echo "Lokale Version ist aktuell."
+		else
+			echo "Jarfile kann nicht gefunden werden. Neu kompilieren mit -r"
+			exit 
+		fi
 	fi
 fi
 if [ "$build" == "1" ]; then
@@ -162,4 +167,4 @@ echo "Starte JOSM Version $version_aktuell"
 java -Xms"$minmem"M -Xmx"$maxmem"M -Dsun.java2d.opengl=$acc2d -jar $source_dir/dist/josm-custom.jar $@ &
 
 # ProzessID mit der JOSM gestartet wurde augeben
-echo "JOSM wurde mir der ProzessID $! gestartet"
+echo "JOSM wurde mit der ProzessID $! gestartet"
