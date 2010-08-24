@@ -39,7 +39,7 @@ acc2d="false"
 set -- `getopt "hlorm:" "$@"`
 while [ "$1" != "" ]; do
 	case "$1" in
-		-h) echo "Hilfe: `basename $0` [-h] [-m] [Dateien]"; 
+		-h) echo "Hilfe: `basename $0` [-h] [-l] [-o] [-r] [-m] [Dateien]"; 
 		#-n) echo "Repository wird nicht ausgecheckt. Lokale Version wird gestartet";
 		    echo "-h : zeigt diese Hilfe an";	
 		    echo "-l : zeigt die lokale Versionsnummer an";
