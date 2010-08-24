@@ -147,7 +147,12 @@ else
 	fi
 fi
 if [ "$build" == "1" ]; then
-	ant clean dist -f $source_dir/build.xml
+	if ant clean dist -f $source_dir/build.xml; then
+		echo "Kompilieren erfolgreich beendet!"
+	else
+		echo "Fehler beim Kompilieren. Abbruch"
+		exit 1
+	fi
 fi
 
 version_aktuell=`svn info $source_dir | grep Revision | awk '{print $2}'`
