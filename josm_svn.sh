@@ -36,7 +36,7 @@ acc2d="false"
 
 # Parsen der übergebenen Parameter
 
-set -- `getopt "hlorvm:" "$@"`
+set -- `getopt "hlorm:" "$@"`
 while [ "$1" != "" ]; do
 	case "$1" in
 		-h) echo "Hilfe: `basename $0` [-h] [-l] [-o] [-r] [-m] [Dateien]"; 
@@ -46,7 +46,6 @@ while [ "$1" != "" ]; do
 		    echo "-o : zeigt die Versionsnummer im Repository an";
                     echo "-m : Speicher der JOSM zugewiesen wird (in MB). Muss größer als $minmem sein"; 
 		    echo "-r : Erneute Kompilierung der lokal vorhandenen Quellen.";
-		    echo "-v : Version xxxx aus dem SVN auschecken und kompilieren.";
 		    exit;;
 		-l) shift; showloc=1;;
 		-o) shift; showonline=1;;
