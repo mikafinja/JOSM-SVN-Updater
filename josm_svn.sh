@@ -45,8 +45,9 @@ is_repo_online() {
 }
 
 repo_local_version() {
-	if local_svn_version=`svn info $source_dir > /dev/null 2>&1`; then
-		return $local_svn_version
+	if `svn info $source_dir`; then
+		svn_local_version=svn info $source_dir | grep Revision | awk '{print $2}'
+		return $svn_local_version
 	else
 		return 0
 	fi
