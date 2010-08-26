@@ -34,6 +34,30 @@ acc2d="false"
 # Beginn des Scripts, aber hier nichts mehr verändern!
 ###
 
+# Funktionen
+
+is_repo_online() {
+	if ping abx.josm.openstreetmap.de -c 2 -W 2 > /dev/null 2>&1; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+repo_local_version() {
+	if local_svn_version=`svn info $source_dir > /dev/null 2>&1`; then
+		return $local_svn_version
+	else
+		return 0
+	fi
+}
+
+
+`is_repo_online`
+echo $?
+
+exit
+
 # Parsen der übergebenen Parameter
 
 set -- `getopt "hlorm:" "$@"`
