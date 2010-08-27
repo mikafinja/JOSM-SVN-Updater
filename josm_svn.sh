@@ -39,32 +39,43 @@ REPO_URL=josm.openstreetmap.de/svn/trunk
 
 # globale Variablen
 
-SVN_LOCAL_VERSION=0
-SVN_ONLINE_VERSION=0
+declare -i SVN_LOCAL_VERSION=0
+declare -i SVN_ONLINE_VERSION=0
 
 # Funktionen
 
-is_repo_online() {
-	if ping josm.openstreetmap.de -c 2 -W 2 > /dev/null 2>&1; then
-		return 1
-	else
+is_var_numeric() {
+	if [ $1 -eq $1 2> /dev/null ]; then
 		return 0
+	else
+		return 1
 	fi
 }
 
 repo_local_version() {
-	if SVN_LOCAL_VERSION=`svn info $SOURCE_DIR 2> /dev/null | grep Revision 2> /dev/null | awk '{print $2}' 2> /dev/null`; then
-		return 1
+	SVN_LOCAL_VERSION=`svn info $SOURCE_DIR 2> /dev/null | grep Revision 2> /dev/null | awk '{print $2}' 2> /dev/null`
+	is_var_numeric $SVN_LOCAL_VERSION
+	if [ $? -eq 0 ]; then
+		if [ $SVN_LOCAL_VERSION -gt 1 ]; then
+			return 0
+		fi
 	else
+		return 1
+	fi
+}
+
+is_repo_online() {
+	if ping josm.openstreetmap.de -c 2 -W 2 > /dev/null 2>&1; then
 		return 0
+	else
+		return 1
 	fi
 }
 
 repo_online_version() {
-	is_repo_online
-	if [ $? -eq 1 ]; then
+	if is_repo_online; then
 		SVN_ONLINE_VERSION=`svn info http://$REPO_URL 2> /dev/null | grep Revision 2> /dev/null | awk '{print $2}' 2> /dev/null`
-		if [ "$SVN_ONLINE_VERSION" == "0" ]; then
+		if [ $SVN_ONLINE_VERSION -gt 1 ]; then
 			return 0
 		else
 			return 1
@@ -74,13 +85,9 @@ repo_online_version() {
 	fi
 }
 
-repo_local_version
-echo $?
-echo $SVN_LOCAL_VERSION
-
-repo_online_version
-echo $?
-echo $SVN_ONLINE_VERSION
+build_josm() {
+	exit	
+}
 
 exit
 
