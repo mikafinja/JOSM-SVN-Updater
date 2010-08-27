@@ -168,3 +168,4 @@ java -Xms"$minmem"M -Xmx"$maxmem"M -Dsun.java2d.opengl=$acc2d -jar $source_dir/d
 
 # ProzessID mit der JOSM gestartet wurde augeben
 echo "JOSM wurde mit der ProzessID $! gestartet"
+exit
