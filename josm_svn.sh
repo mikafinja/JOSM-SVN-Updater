@@ -19,7 +19,7 @@
 ###
 
 # Verzeichnis in das das SVN ausgecheckt wird
-source_dir=~/source/josm
+SOURCE_DIR=~/source/josm
 
 # Maximaler Heap mit dem die Java-VM gestartet werden soll (in MB)
 maxmem="1240"
@@ -30,14 +30,22 @@ minmem="128"
 # 2D-Beschleunigung aktivieren ja=true; nein=false
 acc2d="false"
 
+# URL des Repositories
+REPO_URL=josm.openstreetmap.de/svn/trunk
+
 ###
 # Beginn des Scripts, aber hier nichts mehr verändern!
 ###
 
+# globale Variablen
+
+SVN_LOCAL_VERSION=0
+SVN_ONLINE_VERSION=0
+
 # Funktionen
 
 is_repo_online() {
-	if ping abx.josm.openstreetmap.de -c 2 -W 2 > /dev/null 2>&1; then
+	if ping josm.openstreetmap.de -c 2 -W 2 > /dev/null 2>&1; then
 		return 1
 	else
 		return 0
@@ -45,17 +53,34 @@ is_repo_online() {
 }
 
 repo_local_version() {
-	if `svn info $source_dir`; then
-		svn_local_version=svn info $source_dir | grep Revision | awk '{print $2}'
-		return $svn_local_version
+	if SVN_LOCAL_VERSION=`svn info $SOURCE_DIR 2> /dev/null | grep Revision 2> /dev/null | awk '{print $2}' 2> /dev/null`; then
+		return 1
 	else
 		return 0
 	fi
 }
 
+repo_online_version() {
+	is_repo_online
+	if [ $? -eq 1 ]; then
+		SVN_ONLINE_VERSION=`svn info http://$REPO_URL 2> /dev/null | grep Revision 2> /dev/null | awk '{print $2}' 2> /dev/null`
+		if [ "$SVN_ONLINE_VERSION" == "0" ]; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		return 2 
+	fi
+}
 
-`is_repo_online`
+repo_local_version
 echo $?
+echo $SVN_LOCAL_VERSION
+
+repo_online_version
+echo $?
+echo $SVN_ONLINE_VERSION
 
 exit
 
