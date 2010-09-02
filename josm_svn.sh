@@ -87,9 +87,9 @@ repo_online_version() {
 	fi
 }
 
-build_josm() {
+build_ant() {
 	if repo_local_version; then
-		if ant clean dist -f $source_dir/build.xml; then
+		if ant clean dist -f $SOURCE_DIR/build.xml; then
 			return 0
 		else
 			return 1
@@ -133,23 +133,29 @@ if [ "$showloc" == "1" ]; then
 fi
 
 if [ "$showonline" == "1" ]; then
-	if ping josm.openstreetmap.de -c 2 > /dev/null; then
-		echo "aktuelle Version im Repository:"
-		svn info http://josm.openstreetmap.de/svn/trunk | grep Revision
+	if repo_online_version; then
+		echo Version im Repository: $SVN_ONLINE_VERSION
+		exit 0
 	else
-		echo "Repository ist nicht erreichbar / offline"
+		echo Repository ist nicht erreichbar / offline
 	fi
 	exit 1
 fi
 
 if [ "$build" == "1" ]; then
-	if svn info $source_dir > /dev/null; then
-		echo "Quellen lokal vorhanden, kompiliere Quellen erneut."
-	else
-		echo "Quellen lokal nicht vorhanden. Script wird abgebrochen."
+	echo Versuche JOSM zu kompilieren
+	build_ant
+	ec=$?
+	if [ $ec -eq 0 ]; then
+		echo Kompilieren erfolgreich beendet
+		exit 0
+	elif [ $ec -eq 1 ]; then
+		echo Fehler beim Kompilieren. Abbruch
 		exit 1
+	elif [ $ec -eq 2 ]; then
+		echo Keine lokalen Quellen vorhanden. Abbruch
 	fi
-else
+fi
 
 	# prüfung, ob svn-repository erreichbar ist
 	if ping josm.openstreetmap.de -c 2 > /dev/null; then
