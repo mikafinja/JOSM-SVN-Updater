@@ -58,6 +58,8 @@ repo_local_version() {
 	if [ $? -eq 0 ]; then
 		if [ $SVN_LOCAL_VERSION -gt 1 ]; then
 			return 0
+		else 
+			return 1
 		fi
 	else
 		return 1
@@ -65,7 +67,7 @@ repo_local_version() {
 }
 
 is_repo_online() {
-	if ping josm.openstreetmap.de -c 2 -W 2 > /dev/null 2>&1; then
+	if ping josm.openstreetmap.de -c 2 > /dev/null 2>&1; then
 		return 0
 	else
 		return 1
@@ -86,10 +88,17 @@ repo_online_version() {
 }
 
 build_josm() {
-	exit	
+	if repo_local_version; then
+		if ant clean dist -f $source_dir/build.xml; then
+			return 0
+		else
+			return 1
+		fi
+	else
+		return 2
+	fi	
 }
 
-exit
 
 # Parsen der übergebenen Parameter
 
@@ -114,12 +123,13 @@ while [ "$1" != "" ]; do
 done
 
 if [ "$showloc" == "1" ]; then
-	if svn info $source_dir > /dev/null; then
-		svn info $source_dir | grep Revision
+	if repo_local_version; then
+		echo Lokale Version: $SVN_LOCAL_VERSION
+		exit 0
 	else
-		echo "Keine lokalen Quellen gefunden."
+		echo Keine lokalen Quellen vorhanden
+		exit 1
 	fi
-	exit 1
 fi
 
 if [ "$showonline" == "1" ]; then
