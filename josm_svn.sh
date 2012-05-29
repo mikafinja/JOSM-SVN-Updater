@@ -58,6 +58,7 @@ done
 
 if [ "$showloc" == "1" ]; then
 	if svn info $source_dir > /dev/null; then
+                echo "Lokale Version:"
 		svn info $source_dir | grep Revision
 	else
 		echo "Keine lokalen Quellen gefunden."
@@ -67,7 +68,7 @@ fi
 
 if [ "$showonline" == "1" ]; then
 	if ping josm.openstreetmap.de -c 2 > /dev/null; then
-		echo "aktuelle Version im Repository:"
+		echo "Aktuelle Version im Repository:"
 		svn info http://josm.openstreetmap.de/svn/trunk | grep Revision
 	else
 		echo "Repository ist nicht erreichbar / offline"
@@ -134,7 +135,6 @@ else
 	# wenn die lokale Version kleiner ist als die svn version wird das Repository ausgecheckt und kompiliert.
 	elif [ $version_lokal -lt $version_svn ]; then
 		echo "Die lokale Version ist veraltet. Aktuelle Version wird herunter geladen."
-		cd $source_dir
 
 		# auschecken des Repository
 		svn co http://josm.openstreetmap.de/svn/trunk $source_dir
