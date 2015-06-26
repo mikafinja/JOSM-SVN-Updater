@@ -2,14 +2,14 @@ JOSM-SVN-Updater
 
 // Lizenz
 
-Copyright (C) [2009] [Max Andre - Benutzer Telegnom bei Openstreetmap.org]
+Copyright (C) [2009-2015] [Max Andre - Benutzer Telegnom bei Openstreetmap.org]
 
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU
 General Public License as published by the Free Software Foundation; either version 3 of the License,
 or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without #even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without #even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 To get a copy of the GNU General Public License see <http://www.gnu.org/licenses/>.
@@ -26,8 +26,7 @@ Benutzung: josm_svn.sh [-h] [-l] [-o] [-r] [-m] [Dateien]
 
 // Hilfe
 
-Hilfe findest du in meinem Blog http://telegnom.org oder bei 
-GitHub: http://github.com/telegnom/JOSM-SVN-Updater
+Hilfe findest du bei GitHub: http://github.com/telegnom/JOSM-SVN-Updater
 
 // Fehler melden / Feature vorschlagen
 

@@ -3,12 +3,12 @@
 #
 # Copyright (C) [2009] [Max Andre - Benutzer Telegnom bei Openstreetmap.org]
 #
-# This program is free software; you can redistribute it and/or modify it under the terms of the GNU 
+# This program is free software; you can redistribute it and/or modify it under the terms of the GNU
 # General Public License as published by the Free Software Foundation; either version 3 of the License,
 # or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-# without #even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without #even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
 #
 # To get a copy of the GNU General Public License see <http://www.gnu.org/licenses/>.
@@ -22,7 +22,7 @@
 source_dir=~/source/josm
 
 # Maximaler Heap mit dem die Java-VM gestartet werden soll (in MB)
-maxmem="1240"
+maxmem="1024"
 
 # Minimaler Heap mit dem die Java-VM gestartet werden soll (in MB)
 minmem="128"
@@ -34,17 +34,42 @@ acc2d="false"
 # Beginn des Scripts, aber hier nichts mehr verändern!
 ###
 
+# Prüfen ob die nötigen Tools installiert sind und im globalen Suchpfad vorhandenen sind.
+
+reqMissing=0;
+
+echo "Überprüfe ob die notwendigen Tools installiert sind...";
+
+which ant > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "Apache Ant wurde nicht gefunden.";
+	reqMissing=1;
+fi
+
+which svn > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+	echo "Subversion (SVN) wurde nicht gefunden.";
+	reqMissing=1;
+fi
+
+if [ $reqMissing -ne 0 ]; then
+	echo "Installiere die fehlenden Abhänigkeiten und führe das Script erneut aus.";
+	exit 1;
+else
+	echo "okay";
+fi
+
 # Parsen der übergebenen Parameter
 
 set -- `getopt "hlorm:" "$@"`
 while [ "$1" != "" ]; do
 	case "$1" in
-		-h) echo "Hilfe: `basename $0` [-h] [-l] [-o] [-r] [-m] [Dateien]"; 
+		-h) echo "Hilfe: `basename $0` [-h] [-l] [-o] [-r] [-m] [Dateien]";
 		#-n) echo "Repository wird nicht ausgecheckt. Lokale Version wird gestartet";
-		    echo "-h : zeigt diese Hilfe an";	
+		    echo "-h : zeigt diese Hilfe an";
 		    echo "-l : zeigt die lokale Versionsnummer an";
 		    echo "-o : zeigt die Versionsnummer im Repository an";
-                    echo "-m : Speicher der JOSM zugewiesen wird (in MB). Muss größer als $minmem sein"; 
+                    echo "-m : Speicher der JOSM zugewiesen wird (in MB). Muss größer als $minmem sein";
 		    echo "-r : Erneute Kompilierung der lokal vorhandenen Quellen.";
 		    exit;;
 		-l) shift; showloc=1;;
@@ -147,7 +172,7 @@ else
 			echo "Lokale Version ist aktuell."
 		else
 			echo "Jarfile kann nicht gefunden werden. Neu kompilieren mit -r"
-			exit 
+			exit
 		fi
 	fi
 fi
